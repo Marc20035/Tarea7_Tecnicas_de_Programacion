@@ -1,116 +1,147 @@
+
 import java.util.Random;
+import java.util.Scanner;
+
+public class Jugador {
+    private String nombre;
+    private Cuadricula cuadricula;
+
+    public Jugador(String nombre) {
+        this.nombre = nombre;
+        cuadricula = new Cuadricula();
+    }
+
+    public void depositarBarco(int fila, int columna) {
+        cuadricula.depositarBarco(fila, columna);
+    }
+
+    public boolean disparar(int fila, int columna) {
+        return cuadricula.disparar(fila, columna);
+    }
+
+    public void visualizacion() {
+        System.out.println(nombre + ":");
+        cuadricula.visualizacion();
+    }
+}
+
+class Computadora {
+    private Cuadricula cuadricula;
+
+    public Computadora() {
+        cuadricula = new Cuadricula();
+    }
+
+    public void depositarBarcoAleatorio() {
+        Random rand = new Random();
+        int fila = rand.nextInt(10);
+        int columna = rand.nextInt(10);
+        cuadricula.depositarBarco(fila, columna);
+    }
+
+    public boolean disparar() {
+        Random rand = new Random();
+        int fila = rand.nextInt(10);
+        int columna = rand.nextInt(10);
+        return cuadricula.disparar(fila, columna);
+    }
+
+    public void visualizacion() {
+        System.out.println("Computadora:");
+        cuadricula.visualizacion();
+    }
+}
+
+public class MicroGuerraBarcos {
+
+    public static void main(String[] args) {
+        Jugador jugador = new Jugador("Jugador");
+        Computadora computadora = new Computadora();
+        Scanner scanner = new Scanner(System.in);
+
+        // el jugador humano deposita su barco
+        System.out.println("Bienvenido a la Micro Guerra de Barcos");
+        System.out.println("Por favor, introduzca la fila y la columna para depositar su barco:");
+        int filaBarco = scanner.nextInt();
+        int columnaBarco = scanner.nextInt();
+        jugador.depositarBarco(filaBarco, columnaBarco);
+
+        // la computadora deposita su barco aleatoriamente
+        computadora.depositarBarcoAleatorio();
+
+        // el jugador humano comienza
+        boolean turnoJugador = true;
+        boolean hundido = false;
+        while (!hundido) {
+            if (turnoJugador) {
+                // es el turno del jugador humano
+                jugador.visualizacion();
+                System.out.println("Por favor, introduzca la fila y la columna para disparar:");
+                int filaDisparo = scanner.nextInt();
+                int columnaDisparo = scanner.nextInt();
+                hundido = jugador.disparar(filaDisparo, columnaDisparo);
+                turnoJugador = false;
+            } else {
+                // es el turno de la computadora
+                computadora.visualizacion();
+                hundido = computadora.disparar();
+                turnoJugador = true;
+
+            }
+        }
+
+        if (turnoJugador) {
+            System.out.println("¡Has hundido el barco de la computadora!");
+        } else {
+            System.out.println("¡La computadora ha hundido tu barco!");
+        }
+    }
+}
+package pruebas;
 
 public class Cuadricula {
-    // Constantes
-    private static final int TAMANO_CUADRICULA = 10;
-    private static final char AGUA = '~';
-    private static final char BARCO = 'O';
-    private static final char TOCADO = 'X';
-    
-    // Atributos
-    private char[][] cuadricula;
-    
-    // Constructor
+    private final int FILAS = 10;
+    private final int COLUMNAS = 10;
+    private final char AGUA = '-';
+    private final char BARCO = 'B';
+    private final char TOCADO = 'X';
+    private final char HUNDIDO = '#';
+
+    private char[][] tabla;
+
     public Cuadricula() {
-        cuadricula = new char[TAMANO_CUADRICULA][TAMANO_CUADRICULA];
-        for (int i = 0; i < TAMANO_CUADRICULA; i++) {
-            for (int j = 0; j < TAMANO_CUADRICULA; j++) {
-                cuadricula[i][j] = AGUA;
+        tabla = new char[FILAS][COLUMNAS];
+        for (int i = 0; i < FILAS; i++) {
+            for (int j = 0; j < COLUMNAS; j++) {
+                tabla[i][j] = AGUA;
             }
         }
     }
-    
-    // Métodos
+
     public void depositarBarco(int fila, int columna) {
-        cuadricula[fila][columna] = BARCO;
+        tabla[fila][columna] = BARCO;
     }
-    
+
     public boolean disparar(int fila, int columna) {
-        if (cuadricula[fila][columna] == BARCO) {
-            cuadricula[fila][columna] = TOCADO;
+        if (tabla[fila][columna] == BARCO) {
+            tabla[fila][columna] = HUNDIDO;
             return true;
         } else {
+            tabla[fila][columna] = TOCADO;
             return false;
         }
     }
-    
+
     public void visualizacion() {
-        System.out.print("  ");
-        for (int i = 1; i <= TAMANO_CUADRICULA; i++) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
-        
-        for (int i = 0; i < TAMANO_CUADRICULA; i++) {
-            System.out.print((char) ('A' + i) + " ");
-            for (int j = 0; j < TAMANO_CUADRICULA; j++) {
-                System.out.print(cuadricula[i][j] + " ");
+        for (int i = 0; i < FILAS; i++) {
+            for (int j = 0; j < COLUMNAS; j++) {
+                System.out.print(tabla[i][j] + " ");
             }
             System.out.println();
         }
     }
-    
-    public void colocarBarcoComputadora() {
-        Random rnd = new Random();
-        int fila = rnd.nextInt(TAMANO_CUADRICULA);
-        int columna = rnd.nextInt(TAMANO_CUADRICULA);
-        depositarBarco(fila, columna);
-    }
-
-private void turnoComputadora(Cuadricula cuadriculaHumano) {
-    Random rnd = new Random();
-    int fila = rnd.nextInt(Cuadricula.TAMANO_CUADRICULA);
-    int columna = rnd.nextInt(Cuadricula.TAMANO_CUADRICULA);
-    boolean acierto = cuadriculaHumano.disparar(fila, columna);
-    System.out.println("La computadora dispara en la celda " + (char) ('A' + fila) + (columna + 1));
-    if (acierto) {
-        System.out.println("¡La computadora ha acertado!");
-        if (cuadriculaHumano.haHundidoBarco(fila, columna)) {
-            System.out.println("¡La computadora ha hundido tu barco!");
-            barcoHumanoHundido = true;
-        }
-    } else {
-        System.out.println("La computadora ha fallado.");
-    }
 }
-public class Main {
-    public static void main(String[] args) {
-        Cuadricula jugador = new Cuadricula();
-        Cuadricula computadora = new Cuadricula();
 
-        System.out.println("Posiciona tu barco:");
-        jugador.depositarBarco(2, 2);
-        jugador.visualizacion();
 
-        System.out.println("La computadora está posicionando su barco...");
-        computadora.depositarBarcoAleatorio();
-        computadora.visualizacion();
 
-        while (true) {
-            System.out.println("Tu turno:");
-            int x = leerCoordenada("x");
-            int y = leerCoordenada("y");
-            boolean acierto = computadora.disparar(x, y);
-            jugador.visualizacion();
-            if (acierto) {
-                System.out.println("¡Has hundido el barco de la computadora!");
-                break;
-            }
 
-            System.out.println("Turno de la computadora:");
-            acierto = jugador.dispararAleatorio();
-            computadora.visualizacion();
-            if (acierto) {
-                System.out.println("La computadora ha hundido tu barco. ¡Perdiste!");
-                break;
-            }
-        }
-    }
-
-    private static int leerCoordenada(String nombreCoordenada) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Introduce la coordenada " + nombreCoordenada + ": ");
-        return scanner.nextInt();
-        }
-    }
-}
