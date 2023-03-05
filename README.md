@@ -1,6 +1,8 @@
 # Tarea7_Tecnicas_de_Programacion
 
-# Notas: https://github.com/Marc20035/Tarea7_Tecnicas_de_Programacion.git
+# Notas: 
+
+* Este es mi repositorio: https://github.com/Marc20035/Tarea7_Tecnicas_de_Programacion.git
 
 # Ejercicios: 
 
