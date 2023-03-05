@@ -1,100 +1,70 @@
-import java.util.Arrays;
+package pruebas;
+
+import java.util.Random;
 import java.util.Scanner;
 
 public class Cuadricula {
-    private static final int TABLERO_FILAS = 10;
-    private static final int TABLERO_COLUMNAS = 10;
-    private static final char CASILLA_AGUA = '~';
-    private static final char CASILLA_BARCO = 'B';
-    private static final char CASILLA_TOCADO = 'X';
-    
-    private char[][] tablero;
-    private int filaBarco;
-    private int columnaBarco;
-    
+
+    private final int FILAS = 10;
+    private final int COLUMNAS = 10;
+    private final char AGUA = '-';
+    private final char BARCO = 'B';
+    private final char TOCADO = 'X';
+    private final char HUNDIDO = '#';
+
+    private char[][] tabla;
+
     public Cuadricula() {
-        tablero = new char[TABLERO_FILAS][TABLERO_COLUMNAS];
-        for (int i = 0; i < TABLERO_FILAS; i++) {
-            Arrays.fill(tablero[i], CASILLA_AGUA);
-        }
-        filaBarco = -1;
-        columnaBarco = -1;
-    }
-    
-    public void depositarBarco(int fila, int columna) {
-        if (fila < 0 || fila >= TABLERO_FILAS || columna < 0 || columna >= TABLERO_COLUMNAS) {
-            System.out.println("Coordenadas inválidas");
-            return;
-        }
-        if (tablero[fila][columna] == CASILLA_BARCO) {
-            System.out.println("Ya hay un barco en esta celda");
-            return;
-        }
-        tablero[fila][columna] = CASILLA_BARCO;
-        filaBarco = fila;
-        columnaBarco = columna;
-        System.out.println("Barco depositado en " + fila + ", " + columna);
-    }
-    
-    public boolean disparar(int fila, int columna) {
-        if (fila < 0 || fila >= TABLERO_FILAS || columna < 0 || columna >= TABLERO_COLUMNAS) {
-            System.out.println("Coordenadas inválidas");
-            return false;
-        }
-        if (tablero[fila][columna] == CASILLA_TOCADO) {
-            System.out.println("Ya has disparado a esta celda");
-            return false;
-        }
-        if (tablero[fila][columna] == CASILLA_AGUA) {
-            System.out.println("Agua!");
-            tablero[fila][columna] = CASILLA_TOCADO;
-            return false;
-        }
-        if (tablero[fila][columna] == CASILLA_BARCO) {
-            System.out.println("Hundido!");
-            tablero[fila][columna] = CASILLA_TOCADO;
-            if (fila == filaBarco && columna == columnaBarco) {
-                return true;
+        tabla = new char[FILAS][COLUMNAS];
+        for (int i = 0; i < FILAS; i++) {
+            for (int j = 0; j < COLUMNAS; j++) {
+                tabla[i][j] = AGUA;
             }
         }
-        return false;
     }
-    
+
+    public void depositarBarco(int fila, int columna) {
+        tabla[fila][columna] = BARCO;
+    }
+
+    public boolean disparar(int fila, int columna) {
+        if (tabla[fila][columna] == BARCO) {
+            tabla[fila][columna] = HUNDIDO;
+            return true;
+        } else {
+            tabla[fila][columna] = TOCADO;
+            return false;
+        }
+    }
+
     public void visualizacion() {
-        System.out.println("  0 1 2 3 4 5 6 7 8 9");
-        for (int i = 0; i < TABLERO_FILAS; i++) {
-            System.out.print(i + " ");
-            for (int j = 0; j < TABLERO_COLUMNAS; j++) {
-                System.out.print(tablero[i][j] + " ");
+        for (int i = 0; i < FILAS; i++) {
+            for (int j = 0; j < COLUMNAS; j++) {
+                System.out.print(tabla[i][j] + " ");
             }
             System.out.println();
         }
     }
-    
+
     public static void main(String[] args) {
         Cuadricula cuadricula = new Cuadricula();
+        Random rand = new Random();
+        int filaBarco = rand.nextInt(10);
+        int columnaBarco = rand.nextInt(10);
+        cuadricula.depositarBarco(filaBarco, columnaBarco);
+        System.out.println("Bienvenido a la Micro Guerra de Barcos");
+        boolean hundido = false;
         Scanner scanner = new Scanner(System.in);
-    
-        System.out.println("¡Bienvenido a la micro guerra de barcos!");
-    
-        while (!cuadricula.hundido()) {
+        while (!hundido) {
+            System.out.println("Por favor, introduzca una fila y una columna para disparar:");
+            int filaDisparo = scanner.nextInt();
+            int columnaDisparo = scanner.nextInt();
+            hundido = cuadricula.disparar(filaDisparo, columnaDisparo);
             cuadricula.visualizacion();
-    
-            System.out.print("Introduce la fila del disparo (0-9): ");
-            int fila = scanner.nextInt();
-    
-            System.out.print("Introduce la columna del disparo (0-9): ");
-            int columna = scanner.nextInt();
-    
-            boolean hundido = cuadricula.disparar(fila, columna);
-            if (hundido) {
-                System.out.println("¡Barco hundido!");
-            } else {
-                System.out.println("Agua...");
-            }
         }
-    
-        cuadricula.visualizacion();
-        System.out.println("¡Ganaste la partida!");
+        System.out.println("¡Felicidades, has hundido el barco!");
+        scanner.close();
     }
-}    
+}
+
+
