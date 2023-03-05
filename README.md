@@ -3,7 +3,7 @@
 
 # Ejercicios: 
 
-__1 Los dados
+__1 Los dados__
 Crea una clase modelizando un dado para jugar. Esta clase tiene:
 
 dos atributos de instancia: uno que permite conocer el número de caras que tiene el dado y otro para almacenar la última cara que se extrajo;
@@ -18,7 +18,7 @@ un método de instancia que permite simular la tirada de los dados, devolviendo 
 
 Escribir un algoritmo principal usando esta clase para crear tres dados: uno tiene seis caras, otro tiene diez caras y el último tiene doce caras. Los tres dados se lanzan hasta que la suma de los dados sea mayor o igual a veinte.
 
-2. Los clientes
+__2. Los clientes
 Para las necesidades de un sitio de venta online de libros de informática, ediciones ENI por ejemplo, se pide crear una clase que permita modelizar a un cliente. Todos los clientes tienen un nombre y se les debe asignar un número de cliente. También se pide escribir un algoritmo de prueba para capturar y mostrar clientes.
 
 Ejemplo de ejecución posible:
